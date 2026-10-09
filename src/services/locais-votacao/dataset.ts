@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { readFile, rm, writeFile, mkdir } from "node:fs/promises";
+import { readFile, rename, rm, writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import type { Readable } from "node:stream";
 import { parse } from "csv-parse";
@@ -118,13 +118,25 @@ export async function carregarBaseLocais(opcoes: OpcoesCarga = {}): Promise<Base
 
   await mkdir(dir, { recursive: true });
   const url = urlBase(ano);
-  const caminhoZip = join(dir, `eleitorado_local_votacao_${ano}.zip`);
+  // Nomes por processo: o cliente MCP pode iniciar mais de uma instância ao mesmo tempo.
+  const caminhoZip = join(dir, `eleitorado_local_votacao_${ano}.${process.pid}.zip`);
+  const caminhoTmp = `${caminhoJson}.${process.pid}.tmp`;
   log(`Baixando ${url} …`);
-  await baixarArquivo(url, caminhoZip);
-  log("Processando CSV …");
-  const base = await lerCsvLocais(await abrirCsvNacional(caminhoZip), url);
-  await writeFile(caminhoJson, JSON.stringify(base));
-  await rm(caminhoZip, { force: true });
-  log(`Base pronta: ${base.metadados.totalLocais} locais (${caminhoJson}).`);
-  return base;
+  try {
+    await baixarArquivo(url, caminhoZip);
+    log("Processando CSV …");
+    const base = await lerCsvLocais(await abrirCsvNacional(caminhoZip), url);
+    await writeFile(caminhoTmp, JSON.stringify(base));
+    try {
+      await rename(caminhoTmp, caminhoJson);
+    } catch (e) {
+      // Outra instância gravou a base primeiro (no Windows o arquivo pode estar em uso): mantém a dela.
+      if (!existsSync(caminhoJson)) throw e;
+    }
+    log(`Base pronta: ${base.metadados.totalLocais} locais (${caminhoJson}).`);
+    return base;
+  } finally {
+    await rm(caminhoZip, { force: true });
+    await rm(caminhoTmp, { force: true });
+  }
 }
