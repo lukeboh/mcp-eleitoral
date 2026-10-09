@@ -17,7 +17,19 @@ const geocodificadorFalso: Geocodificador = {
 
 let client: Client;
 beforeAll(async () => {
-  const server = criarServidor({ locais: new FonteLocais(carregarAmostra), geocodificador: geocodificadorFalso });
+  const ondeVotarFalso = {
+    consultar: async () => {
+      throw new Error("não usado neste teste");
+    },
+    continuar: async () => {
+      throw new Error("não usado neste teste");
+    },
+  };
+  const server = criarServidor({
+    locais: new FonteLocais(carregarAmostra),
+    geocodificador: geocodificadorFalso,
+    ondeVotar: ondeVotarFalso,
+  });
   const [t1, t2] = InMemoryTransport.createLinkedPair();
   client = new Client({ name: "teste", version: "0" });
   await Promise.all([server.connect(t1), client.connect(t2)]);
@@ -36,6 +48,8 @@ describe("servidor MCP", () => {
       "buscar_locais_votacao",
       "contar_locais_votacao",
       "locais_votacao_proximos",
+      "onde_votar",
+      "onde_votar_continuar",
     ]);
   });
 

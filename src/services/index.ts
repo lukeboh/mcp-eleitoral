@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { Contexto } from "../contexto.js";
 import { registrarLocaisVotacao } from "./locais-votacao/ferramentas.js";
+import { registrarOndeVotar } from "./onde-votar/ferramentas.js";
 
 /**
  * Cada serviço eleitoral registra suas ferramentas aqui.
@@ -8,7 +9,7 @@ import { registrarLocaisVotacao } from "./locais-votacao/ferramentas.js";
  */
 const servicos: ((server: McpServer, ctx: Contexto) => void)[] = [
   registrarLocaisVotacao,
-  // registrarOndeVotar, // pendente: ver src/services/onde-votar/README.md
+  registrarOndeVotar,
 ];
 
 export function registrarServicos(server: McpServer, ctx: Contexto) {
