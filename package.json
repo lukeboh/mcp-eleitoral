@@ -1,0 +1,52 @@
+{
+  "name": "mcp-eleitoral",
+  "version": "0.1.0",
+  "description": "Servidor MCP para serviços da Justiça Eleitoral (TSE): locais de votação, onde votar e outros.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "dados:atualizar": "tsx scripts/atualizar-dados.ts",
+    "inspector": "npx @modelcontextprotocol/inspector tsx src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukeboh/mcp-eleitoral.git"
+  },
+  "keywords": [
+    "mcp",
+    "tse",
+    "eleicoes",
+    "locais-de-votacao"
+  ],
+  "bugs": {
+    "url": "https://github.com/lukeboh/mcp-eleitoral/issues"
+  },
+  "homepage": "https://github.com/lukeboh/mcp-eleitoral#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "csv-parse": "^7.0.3",
+    "yauzl": "^3.4.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/yauzl": "^3.4.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.3"
+  },
+  "type": "module",
+  "bin": {
+    "mcp-eleitoral": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}
