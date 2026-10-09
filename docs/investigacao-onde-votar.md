@@ -1,5 +1,7 @@
 # Investigação: serviço "Onde votar" (tn3.tse.jus.br)
 
+Andamento da implementação: [`implementacao-onde-votar.md`](implementacao-onde-votar.md).
+
 Levantamento feito em 09/10/2026 a partir do código público do front-end
 (`https://tn3.tse.jus.br/main.js`, SPA Angular) e da configuração pública do ambiente.
 Nenhum login foi feito e nenhum dado pessoal foi consultado.
