@@ -4,6 +4,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { criarServidor } from "../src/server.js";
 import type { Geocodificador } from "../src/services/geocoding/geocodificador.js";
 import { FonteLocais } from "../src/services/locais-votacao/fonte.js";
+import type { DadosOndeVotar } from "../src/services/onde-votar/resposta.js";
 import { carregarAmostra } from "./apoio.js";
 
 const geocodificadorFalso: Geocodificador = {
@@ -18,12 +19,11 @@ const geocodificadorFalso: Geocodificador = {
 let client: Client;
 beforeAll(async () => {
   const ondeVotarFalso = {
-    consultar: async () => {
-      throw new Error("não usado neste teste");
-    },
-    continuar: async () => {
-      throw new Error("não usado neste teste");
-    },
+    consultar: async () => ({ status: "desafio_pendente" as const, sessao: "s1", expira_em: "2026-10-09T12:00:00Z" }),
+    continuar: async () => ({
+      status: "ok" as const,
+      dados: { eleitor: "FULANA", local: { nome: "ESCOLA CLASSE 206 SUL" } } as DadosOndeVotar,
+    }),
   };
   const server = criarServidor({
     locais: new FonteLocais(carregarAmostra),
@@ -70,5 +70,24 @@ describe("servidor MCP", () => {
     const r = await chamar("locais_votacao_proximos", { endereco: "lugar nenhum" });
     expect(r.erro).toBe(true);
     expect(r.texto).toMatch(/Não foi possível localizar/);
+  });
+
+  it("onde_votar valida os dados antes de consultar", async () => {
+    const r = await chamar("onde_votar", { identificacao: "123", data_nascimento: "25/12/1980", nome_mae: "Ana Souza" });
+    expect(r.erro).toBe(true);
+    expect(r.texto).toMatch(/CPF \(11 dígitos\)/);
+  });
+
+  it("onde_votar orienta a IA quando há desafio e onde_votar_continuar conclui", async () => {
+    const { json } = await chamar("onde_votar", {
+      identificacao: "529.982.247-25",
+      data_nascimento: "25/12/1980",
+      nome_mae: "Ana Souza",
+    });
+    expect(json).toMatchObject({ status: "desafio_pendente", sessao: "s1" });
+    expect(json.instrucoes).toMatch(/onde_votar_continuar/);
+
+    const fim = await chamar("onde_votar_continuar", { sessao: "s1" });
+    expect(fim.json).toMatchObject({ status: "ok", eleitor: "FULANA", fonte: { url: expect.stringContaining("tn3.tse.jus.br") } });
   });
 });
