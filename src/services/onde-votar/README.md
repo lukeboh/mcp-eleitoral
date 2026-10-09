@@ -3,9 +3,9 @@
 Consulta do local de votação de um eleitor específico, oferecida em
 https://tn3.tse.jus.br/ (primeiro serviço da página).
 
-**Status:** aguardando a investigação das chamadas de rede (HAR). O site bloqueia
-acessos de fora do Brasil (HTTP 403 via Akamai), então a captura precisa ser feita
-de um navegador no Brasil. Veja `docs/investigacao-onde-votar.md`.
+**Status:** investigação concluída: a consulta exige login com hCaptcha. O site bloqueia
+acessos de fora do Brasil (HTTP 403 via Akamai). Caminhos possíveis e detalhes
+em `docs/investigacao-onde-votar.md`.
 
 Quando a investigação estiver pronta, este diretório terá:
 
