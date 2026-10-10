@@ -15,6 +15,7 @@ Foi estruturado para receber outros serviços (situação eleitoral, certidões�
 | Quais cidades do exterior têm mais locais? Quantos locais por zona no DF? | `contar_locais_votacao` com `agrupar_por` |
 | Onde fica a seção 579 da zona 1 do DF? Quais locais há na Asa Sul? | `buscar_locais_votacao` |
 | Qual o local de votação mais perto daqui / da casa do meu pai? | `locais_votacao_proximos` (com endereço ou CEP) |
+| Qual o código IBGE de Mossoró? Existe "Santa Maria" em quais estados? Quais são as capitais? | `buscar_municipio` |
 | Onde eu voto? Qual a minha zona e seção? Meu título está regular? | `onde_votar` (e `onde_votar_continuar`, se houver verificação) |
 
 Sobre proximidade: o servidor não sabe onde o usuário está. O modelo pede um endereço,

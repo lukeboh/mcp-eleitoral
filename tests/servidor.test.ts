@@ -13,6 +13,7 @@ describe("servidor MCP", () => {
     expect(tools.map((t) => t.name).sort()).toEqual([
       "baixar_base",
       "buscar_locais_votacao",
+      "buscar_municipio",
       "contar_locais_votacao",
       "listar_bases",
       "locais_votacao_proximos",
