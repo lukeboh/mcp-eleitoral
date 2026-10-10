@@ -6,6 +6,7 @@
  *   npm run dados -- baixar <base> [--ano 2026] [--uf DF] [--atualizar] [--sim]
  *   npm run dados -- remover <base> [--ano 2026] [--uf DF]
  */
+import "../src/silenciar-avisos.js";
 import { createInterface } from "node:readline/promises";
 import { parseArgs } from "node:util";
 import { criarGerenciador } from "../src/criar-gerenciador.js";

@@ -16,6 +16,10 @@ Foi estruturado para receber outros serviços (situação eleitoral, certidões�
 | Onde fica a seção 579 da zona 1 do DF? Quais locais há na Asa Sul? | `buscar_locais_votacao` |
 | Qual o local de votação mais perto daqui / da casa do meu pai? | `locais_votacao_proximos` (com endereço ou CEP) |
 | Qual o código IBGE de Mossoró? Existe "Santa Maria" em quais estados? Quais são as capitais? | `buscar_municipio` |
+| Quem ganhou para governador no DF? Como foi a votação para presidente em Campinas? Quais partidos fizeram mais votos para deputado? | `resultado_eleicao` |
+| Quantos votos fulano teve em cada município? Onde fulana foi mais votada? | `votos_candidato` |
+| Qual foi a abstenção em SP? Quais estados tiveram mais brancos e nulos? | `comparecimento_abstencao` |
+| Quem ganhou na Escola Classe 206 Sul? Como votou a seção 579? E o bairro Asa Sul? | `resultado_local_votacao` |
 | Onde eu voto? Qual a minha zona e seção? Meu título está regular? | `onde_votar` (e `onde_votar_continuar`, se houver verificação) |
 
 Sobre proximidade: o servidor não sabe onde o usuário está. O modelo pede um endereço,
@@ -61,6 +65,17 @@ Os tamanhos vão de 0,1 MB a mais de 1 GB, por isso:
 | `baixar_base` | Baixa uma base depois da confirmação do usuário (`atualizar=true` para baixar de novo) |
 | `progresso_downloads` | Andamento dos downloads |
 | `remover_base` | Libera espaço |
+
+Bases disponíveis (tamanhos de 2026):
+
+| Base | Conteúdo | Download |
+|---|---|---|
+| `municipios` | Códigos TSE × IBGE | 0,1 MB (automático) |
+| `locais-votacao` | Locais de votação com endereço e coordenadas | ~170 MB |
+| `resultados-detalhe` | Comparecimento, abstenção, brancos e nulos por município/zona | ~2,5 MB (automático) |
+| `resultados-partidos` | Votos por partido por município/zona | ~22 MB |
+| `resultados-candidatos` | Votos por candidato por município/zona (CSV de 3 GB; ~6 min para processar) | ~435 MB |
+| `votacao-secao` | Votos por seção, **por UF** (`BR` = presidente, `ZZ` = exterior) | de 1 MB a ~730 MB (SP) |
 
 Pelo terminal, com barra de progresso:
 

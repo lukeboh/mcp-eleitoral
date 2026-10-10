@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import "./silenciar-avisos.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { criarGerenciador } from "./criar-gerenciador.js";
 import { criarServidor } from "./server.js";

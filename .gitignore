@@ -4,3 +4,4 @@ dist/
 *.log
 *.har
 .env
+*.tmp.ts

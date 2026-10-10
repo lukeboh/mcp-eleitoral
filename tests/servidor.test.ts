@@ -14,6 +14,7 @@ describe("servidor MCP", () => {
       "baixar_base",
       "buscar_locais_votacao",
       "buscar_municipio",
+      "comparecimento_abstencao",
       "contar_locais_votacao",
       "listar_bases",
       "locais_votacao_proximos",
@@ -21,6 +22,9 @@ describe("servidor MCP", () => {
       "onde_votar_continuar",
       "progresso_downloads",
       "remover_base",
+      "resultado_eleicao",
+      "resultado_local_votacao",
+      "votos_candidato",
     ]);
   });
 });

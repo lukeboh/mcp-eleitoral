@@ -1,8 +1,10 @@
 import type { Readable } from "node:stream";
-import { DatabaseSync, type SQLInputValue } from "node:sqlite";
+import type { DatabaseSync as BancoSqlite, SQLInputValue } from "node:sqlite";
 import { lerCsvTse, type LinhaCsv } from "./csv.js";
 
-export { DatabaseSync };
+// Import dinâmico: assim o aviso "experimental" do node:sqlite passa pelo filtro de src/silenciar-avisos.ts.
+const { DatabaseSync } = await import("node:sqlite");
+export type DatabaseSync = BancoSqlite;
 
 export type Coluna = { nome: string; tipo: "TEXT" | "INTEGER" | "REAL"; valor: (l: LinhaCsv) => SQLInputValue };
 
