@@ -24,6 +24,8 @@ Foi estruturado para receber outros serviços (situação eleitoral, certidões�
 | Quem é fulano: partido, coligação, idade, ocupação, bens declarados? | `perfil_candidato` |
 | Quais candidatos a presidente são mais ricos? Patrimônio médio dos eleitos por partido? | `ranking_patrimonio` |
 | Quantas vagas de deputado federal tem SP? Quais partidos formam cada coligação? | `vagas_e_coligacoes` |
+| Quantos eleitores de 16 e 17 anos há no DF? Qual o perfil de escolaridade de Campinas? Quantas mulheres pretas com ensino superior votam em SP? | `perfil_eleitorado` |
+| Os jovens se abstiveram mais que os idosos? A abstenção varia com a escolaridade? | `perfil_comparecimento` |
 | Onde eu voto? Qual a minha zona e seção? Meu título está regular? | `onde_votar` (e `onde_votar_continuar`, se houver verificação) |
 
 Sobre proximidade: o servidor não sabe onde o usuário está. O modelo pede um endereço,
@@ -81,6 +83,8 @@ Bases disponíveis (tamanhos de 2026):
 | `resultados-candidatos` | Votos por candidato por município/zona (CSV de 3 GB; ~6 min para processar) | ~435 MB |
 | `votacao-secao` | Votos por seção, **por UF** (`BR` = presidente, `ZZ` = exterior) | de 1 MB a ~730 MB (SP) |
 | `candidatos`, `candidatos-complementar`, `bens-candidatos`, `coligacoes`, `vagas` | Candidaturas, perfil, bens, coligações e vagas | 0,2 a 3,6 MB cada (automáticas) |
+| `perfil-eleitorado` | Eleitorado atual por gênero, idade, instrução, cor/raça e mais, por zona (CSV de 2,2 GB; ~6 min; 225 MB em disco) | ~81 MB |
+| `perfil-comparecimento` | Comparecimento/abstenção por perfil, por zona e turno (publicado meses após a eleição; padrão: 2024) | ~190 MB |
 
 Pelo terminal, com barra de progresso:
 

@@ -22,6 +22,8 @@ describe("servidor MCP", () => {
       "onde_votar",
       "onde_votar_continuar",
       "perfil_candidato",
+      "perfil_comparecimento",
+      "perfil_eleitorado",
       "progresso_downloads",
       "ranking_patrimonio",
       "remover_base",
