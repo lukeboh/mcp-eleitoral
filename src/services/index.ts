@@ -3,6 +3,7 @@ import type { Contexto } from "../contexto.js";
 import type { DefinicaoBase } from "../dados/tipos.js";
 import { baseLocaisVotacao } from "./locais-votacao/base.js";
 import { registrarLocaisVotacao } from "./locais-votacao/ferramentas.js";
+import { registrarOndeVotar } from "./onde-votar/ferramentas.js";
 
 /**
  * Cada serviço eleitoral registra suas ferramentas e as bases de dados que usa.
@@ -12,7 +13,7 @@ export const definicoesBases: DefinicaoBase[] = [baseLocaisVotacao];
 
 const servicos: ((server: McpServer, ctx: Contexto) => void)[] = [
   registrarLocaisVotacao,
-  // registrarOndeVotar, // pendente: ver src/services/onde-votar/README.md
+  registrarOndeVotar,
 ];
 
 export function registrarServicos(server: McpServer, ctx: Contexto) {

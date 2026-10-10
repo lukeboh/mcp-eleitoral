@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Write(src/**)",
+      "Edit(src/**)",
+      "Write(tests/**)",
+      "Edit(tests/**)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run build)",
+      "Bash(npm test)",
+      "Bash(npx vitest:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)"
+    ]
+  }
+}

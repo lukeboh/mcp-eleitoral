@@ -59,3 +59,14 @@ async function waitFor(cond: () => boolean, timeoutMs = 10_000) {
     await new Promise((r) => setTimeout(r, 20));
   }
 }
+
+describe("instâncias concorrentes", () => {
+  it("duas instâncias baixando a mesma base no mesmo diretório terminam sem erro", async () => {
+    const a = await criarGerenciadorTeste();
+    const b = await criarGerenciadorTeste({ diretorio: (a as unknown as { opcoes: { diretorio: string } }).opcoes.diretorio });
+    const [ra, rb] = await Promise.all([a.iniciarDownload("locais-votacao"), b.iniciarDownload("locais-votacao")]);
+    await Promise.all([ra.promessa, rb.promessa]);
+    const repo = await b.obter<{ metadados: { totalLocais: number } }>("locais-votacao");
+    expect(repo.metadados.totalLocais).toBe(8);
+  });
+});

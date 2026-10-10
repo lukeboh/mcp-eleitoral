@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
@@ -271,16 +272,18 @@ export class GerenciadorBases extends EventEmitter {
       inicio: agora,
       inicioFase: agora,
     };
-    const promessa = this.executar(def, p, progresso);
+    const promessa = this.executar(def, p, progresso, !!opcoes.forcar);
     promessa.catch(() => {}); // erro fica registrado no progresso
     this.tarefas.set(chave, { progresso, promessa });
     return { progresso, promessa, jaEmAndamento: false };
   }
 
-  private async executar(def: DefinicaoBase, p: ParametrosResolvidos, prog: Progresso): Promise<void> {
+  private async executar(def: DefinicaoBase, p: ParametrosResolvidos, prog: Progresso, forcar: boolean): Promise<void> {
     const destino = this.diretorioInstancia(def, p);
-    const temporario = `${destino}.tmp`;
-    const zip = `${destino}.zip`;
+    // Nomes por processo: o cliente MCP pode iniciar mais de uma instância do servidor ao mesmo tempo.
+    const sufixo = `${process.pid}-${randomUUID().slice(0, 8)}`;
+    const temporario = `${destino}.${sufixo}.tmp`;
+    const zip = `${destino}.${sufixo}.zip`;
     const url = this.url(def, p);
     const rotulo = `${def.titulo}${descreverParams(p) ? ` (${descreverParams(p)})` : ""}`;
     let ultimoLog = 0;
@@ -336,10 +339,7 @@ export class GerenciadorBases extends EventEmitter {
       };
       await writeFile(join(temporario, "manifesto.json"), JSON.stringify(manifesto, null, 2));
 
-      // Troca a versão anterior (se houver) pela nova.
-      this.abertas.delete(this.chave(def.id, p));
-      await rm(destino, { recursive: true, force: true });
-      await rename(temporario, destino);
+      await this.instalar(def, p, temporario, destino, forcar);
       prog.fase = "pronta";
       emitir();
       this.log(`${rotulo}: pronta (${formatarBytes(manifesto.tamanhoDisco)} em disco).`);
@@ -353,6 +353,34 @@ export class GerenciadorBases extends EventEmitter {
     } finally {
       await rm(zip, { force: true });
       await rm(`${zip}.part`, { force: true });
+    }
+  }
+
+  /** Move a base processada para o lugar definitivo, substituindo a anterior quando é atualização. */
+  private async instalar(def: DefinicaoBase, p: ParametrosResolvidos, temporario: string, destino: string, forcar: boolean) {
+    const jaExiste = existsSync(join(destino, "manifesto.json"));
+    if (jaExiste && !forcar) {
+      // Outra instância terminou primeiro: mantém a dela.
+      await rm(temporario, { recursive: true, force: true });
+      return;
+    }
+    await this.fecharAberta(this.chave(def.id, p));
+    try {
+      await rm(destino, { recursive: true, force: true });
+      await rename(temporario, destino);
+    } catch (e) {
+      // No Windows o diretório pode estar em uso por outra instância: mantém a versão existente.
+      if (!existsSync(join(destino, "manifesto.json"))) throw e;
+      await rm(temporario, { recursive: true, force: true });
+    }
+  }
+
+  private async fecharAberta(chave: string) {
+    const aberta = this.abertas.get(chave);
+    this.abertas.delete(chave);
+    if (aberta) {
+      const h = (await aberta.catch(() => null)) as { fechar?: () => void } | null;
+      h?.fechar?.();
     }
   }
 
@@ -402,12 +430,7 @@ export class GerenciadorBases extends EventEmitter {
     if (t && (t.progresso.fase === "baixando" || t.progresso.fase === "processando")) {
       throw new Error("Não é possível remover uma base enquanto ela está sendo baixada.");
     }
-    const aberta = this.abertas.get(chave);
-    this.abertas.delete(chave);
-    if (aberta) {
-      const h = (await aberta.catch(() => null)) as { fechar?: () => void } | null;
-      h?.fechar?.();
-    }
+    await this.fecharAberta(chave);
     const dir = this.diretorioInstancia(def, p);
     if (!existsSync(dir)) return false;
     await rm(dir, { recursive: true, force: true });

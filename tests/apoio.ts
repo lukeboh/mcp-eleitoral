@@ -8,6 +8,7 @@ import { GerenciadorBases, type OpcoesGerenciador } from "../src/dados/gerenciad
 import { criarServidor } from "../src/server.js";
 import type { Geocodificador } from "../src/services/geocoding/geocodificador.js";
 import { definicoesBases } from "../src/services/index.js";
+import type { DadosOndeVotar } from "../src/services/onde-votar/resposta.js";
 
 /** Espelho reduzido do CDN do TSE (cdn.tse.jus.br/estatistica/sead/odsele/…) com amostras reais. */
 export const DIR_TSE = fileURLToPath(new URL("./fixtures/tse/", import.meta.url));
@@ -33,8 +34,16 @@ export const geocodificadorFalso: Geocodificador = {
   },
 };
 
+export const ondeVotarFalso = {
+  consultar: async () => ({ status: "desafio_pendente" as const, sessao: "s1", expira_em: "2026-10-09T12:00:00Z" }),
+  continuar: async () => ({
+    status: "ok" as const,
+    dados: { eleitor: "FULANA", local: { nome: "ESCOLA CLASSE 206 SUL" } } as DadosOndeVotar,
+  }),
+};
+
 export async function criarClienteTeste(bases: GerenciadorBases) {
-  const server = criarServidor({ bases, geocodificador: geocodificadorFalso });
+  const server = criarServidor({ bases, geocodificador: geocodificadorFalso, ondeVotar: ondeVotarFalso });
   const [t1, t2] = InMemoryTransport.createLinkedPair();
   const client = new Client({ name: "teste", version: "0" });
   await Promise.all([server.connect(t1), client.connect(t2)]);
