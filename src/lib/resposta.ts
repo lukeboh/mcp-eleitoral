@@ -10,10 +10,10 @@ export function respostaErro(erro: unknown): CallToolResult {
 }
 
 /** Envolve um handler de ferramenta convertendo exceções em resposta de erro legível. */
-export function comTratamento<A>(fn: (args: A) => Promise<CallToolResult>) {
-  return async (args: A): Promise<CallToolResult> => {
+export function comTratamento<A, E>(fn: (args: A, extra: E) => Promise<CallToolResult>) {
+  return async (args: A, extra: E): Promise<CallToolResult> => {
     try {
-      return await fn(args);
+      return await fn(args, extra);
     } catch (e) {
       return respostaErro(e);
     }

@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 export const USER_AGENT =
   process.env.MCP_ELEITORAL_USER_AGENT ??
-  "mcp-eleitoral/0.1 (+https://github.com/lukeboh/mcp-eleitoral)";
+  "mcp-eleitoral/0.2 (+https://github.com/lukeboh/mcp-eleitoral)";
 
 /** Diretório onde as bases baixadas do TSE ficam guardadas. */
 export function diretorioCache(): string {
@@ -13,8 +13,8 @@ export function diretorioCache(): string {
   );
 }
 
-/** Ano da base de locais de votação. Padrão: o mais recente disponível. */
-export function anoLocaisVotacao(): number | undefined {
-  const ano = process.env.MCP_ELEITORAL_ANO;
-  return ano ? Number(ano) : undefined;
+/** Bases até este tamanho são baixadas sem pedir confirmação ao usuário. */
+export function limiteDownloadAutomaticoBytes(): number {
+  const mb = Number(process.env.MCP_ELEITORAL_DOWNLOAD_AUTOMATICO_MB ?? 10);
+  return (Number.isFinite(mb) ? mb : 10) * 1024 * 1024;
 }

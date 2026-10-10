@@ -1,10 +1,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { RepositorioLocais } from "../src/services/locais-votacao/repositorio.js";
-import { carregarAmostra } from "./apoio.js";
+import type { RepositorioLocais } from "../src/services/locais-votacao/repositorio.js";
+import { criarGerenciadorTeste } from "./apoio.js";
 
 let repo: RepositorioLocais;
 beforeAll(async () => {
-  repo = new RepositorioLocais(await carregarAmostra());
+  repo = await (await criarGerenciadorTeste()).obter<RepositorioLocais>("locais-votacao");
 });
 
 describe("contar", () => {

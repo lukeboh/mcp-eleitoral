@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { Contexto } from "../../contexto.js";
 import { comTratamento, respostaJson } from "../../lib/resposta.js";
-import type { FiltroLocais } from "./repositorio.js";
+import type { FiltroLocais, RepositorioLocais } from "./repositorio.js";
 import type { LocalVotacao, MetadadosBase } from "./tipos.js";
 
 const filtros = {
@@ -26,6 +26,7 @@ const filtros = {
     .optional()
     .describe('"brasil" exclui o exterior; "exterior" só locais fora do país. Padrão: "todos".'),
   incluir_inativos: z.boolean().optional().describe("Inclui locais bloqueados/inativos. Padrão: false."),
+  ano: z.number().int().optional().describe("Ano da base de locais. Padrão: o mais recente publicado."),
 };
 
 type ArgsFiltro = {
@@ -104,7 +105,7 @@ export function registrarLocaisVotacao(server: McpServer, ctx: Contexto) {
       },
     },
     comTratamento(async (args) => {
-      const repo = await ctx.locais.obter();
+      const repo = await ctx.bases.obter<RepositorioLocais>("locais-votacao", { ano: args.ano });
       const c = repo.contar(paraFiltro(args, true), args.agrupar_por);
       return respostaJson({
         total_locais: c.locais,
@@ -136,7 +137,7 @@ export function registrarLocaisVotacao(server: McpServer, ctx: Contexto) {
       },
     },
     comTratamento(async (args) => {
-      const repo = await ctx.locais.obter();
+      const repo = await ctx.bases.obter<RepositorioLocais>("locais-votacao", { ano: args.ano });
       const { locais, municipios, avisos } = repo.filtrar(paraFiltro(args, false));
       const limite = args.limite ?? 20;
       const pagina = args.pagina ?? 1;
@@ -189,7 +190,7 @@ export function registrarLocaisVotacao(server: McpServer, ctx: Contexto) {
         throw new Error("Informe `endereco` (ou CEP) ou `latitude` e `longitude`.");
       }
 
-      const repo = await ctx.locais.obter();
+      const repo = await ctx.bases.obter<RepositorioLocais>("locais-votacao", { ano: args.ano });
       const r = repo.maisProximos(ponto, {
         filtro: paraFiltro(args, false),
         limite: args.limite,

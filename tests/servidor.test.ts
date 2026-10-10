@@ -1,44 +1,12 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { beforeAll, describe, expect, it } from "vitest";
-import { criarServidor } from "../src/server.js";
-import type { Geocodificador } from "../src/services/geocoding/geocodificador.js";
-import { FonteLocais } from "../src/services/locais-votacao/fonte.js";
-import { carregarAmostra } from "./apoio.js";
+import { criarClienteTeste, criarGerenciadorTeste } from "./apoio.js";
 
-const geocodificadorFalso: Geocodificador = {
-  async geocodificar(endereco) {
-    if (/206 sul/i.test(endereco)) {
-      return { latitude: -15.8165, longitude: -47.8965, enderecoEncontrado: "SQS 206, Asa Sul, Brasília", fonte: "teste" };
-    }
-    return null;
-  },
-};
-
-let client: Client;
+let chamar: Awaited<ReturnType<typeof criarClienteTeste>>["chamar"];
 beforeAll(async () => {
-  const server = criarServidor({ locais: new FonteLocais(carregarAmostra), geocodificador: geocodificadorFalso });
-  const [t1, t2] = InMemoryTransport.createLinkedPair();
-  client = new Client({ name: "teste", version: "0" });
-  await Promise.all([server.connect(t1), client.connect(t2)]);
+  ({ chamar } = await criarClienteTeste(await criarGerenciadorTeste()));
 });
 
-async function chamar(name: string, args: Record<string, unknown>) {
-  const r = await client.callTool({ name, arguments: args });
-  const texto = (r.content as { type: string; text: string }[])[0].text;
-  return { erro: r.isError === true, texto, json: r.isError ? undefined : JSON.parse(texto) };
-}
-
-describe("servidor MCP", () => {
-  it("expõe as ferramentas de locais de votação", async () => {
-    const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name).sort()).toEqual([
-      "buscar_locais_votacao",
-      "contar_locais_votacao",
-      "locais_votacao_proximos",
-    ]);
-  });
-
+describe("ferramentas de locais de votação", () => {
   it("quantos locais de votação há em NY?", async () => {
     const { json } = await chamar("contar_locais_votacao", { uf: "exterior", municipio: "NY" });
     expect(json.total_locais).toBe(2);
