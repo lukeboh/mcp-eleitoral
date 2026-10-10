@@ -26,6 +26,8 @@ Foi estruturado para receber outros serviços (situação eleitoral, certidões�
 | Quantas vagas de deputado federal tem SP? Quais partidos formam cada coligação? | `vagas_e_coligacoes` |
 | Quantos eleitores de 16 e 17 anos há no DF? Qual o perfil de escolaridade de Campinas? Quantas mulheres pretas com ensino superior votam em SP? | `perfil_eleitorado` |
 | Os jovens se abstiveram mais que os idosos? A abstenção varia com a escolaridade? | `perfil_comparecimento` |
+| Quanto a campanha de fulano recebeu do Fundo Eleitoral? Com o que gastou? Quem foram os maiores doadores? | `financas_candidato` |
+| Quanto cada partido recebeu do FEFC? Quem mais arrecadou? Quais campanhas contrataram a empresa X? | `ranking_financas` |
 | Onde eu voto? Qual a minha zona e seção? Meu título está regular? | `onde_votar` (e `onde_votar_continuar`, se houver verificação) |
 
 Sobre proximidade: o servidor não sabe onde o usuário está. O modelo pede um endereço,
@@ -85,6 +87,7 @@ Bases disponíveis (tamanhos de 2026):
 | `candidatos`, `candidatos-complementar`, `bens-candidatos`, `coligacoes`, `vagas` | Candidaturas, perfil, bens, coligações e vagas | 0,2 a 3,6 MB cada (automáticas) |
 | `perfil-eleitorado` | Eleitorado atual por gênero, idade, instrução, cor/raça e mais, por zona (CSV de 2,2 GB; ~6 min; 225 MB em disco) | ~81 MB |
 | `perfil-comparecimento` | Comparecimento/abstenção por perfil, por zona e turno (publicado meses após a eleição; padrão: 2024) | ~190 MB |
+| `prestacao-contas` | Receitas e despesas contratadas dos candidatos (~80 s para processar; ~380 MB em disco) | ~170 MB (2026) / 1,3 GB (2024) |
 
 Pelo terminal, com barra de progresso:
 
@@ -97,7 +100,9 @@ npm run dados -- remover locais-votacao
 ```
 
 Privacidade: o servidor não armazena CPF, título, e-mail nem data de nascimento de candidatos
-(guarda só a idade na posse), e as amostras de teste têm esses campos mascarados.
+(guarda só a idade na posse), nem CPF de doadores e fornecedores pessoas físicas (só CNPJ de empresas).
+Não há busca reversa por pessoa física doadora: as consultas de finanças partem do candidato ou do partido.
+As amostras de teste mascaram esses campos e pseudonimizam nomes de pessoas físicas.
 
 ## Instalação
 
@@ -176,4 +181,5 @@ o gerenciador cuida do aviso de tamanho, do download e do progresso.
 - [ ] Validar o onde votar com uma consulta real (ver pendências em
       [`docs/implementacao-onde-votar.md`](docs/implementacao-onde-votar.md))
 - [ ] Geocodificar os endereços do exterior para permitir busca por proximidade fora do Brasil
-- [ ] Outros serviços: situação eleitoral, certidão de quitação, resultados de eleições
+- [ ] Outros serviços: situação eleitoral, certidão de quitação
+- [ ] Prestação de contas partidárias, pesquisas eleitorais registradas, histórico de candidaturas

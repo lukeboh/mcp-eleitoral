@@ -11,6 +11,8 @@ import { baseBensCandidatos, baseCandidatos, baseCandidatosComplementar, baseCol
 import { registrarCandidatos } from "./candidatos/ferramentas.js";
 import { basePerfilComparecimento, basePerfilEleitorado } from "./perfil/bases.js";
 import { registrarPerfil } from "./perfil/ferramentas.js";
+import { basePrestacaoContas } from "./contas/bases.js";
+import { registrarContas } from "./contas/ferramentas.js";
 import { registrarOndeVotar } from "./onde-votar/ferramentas.js";
 
 /**
@@ -31,6 +33,7 @@ export const definicoesBases: DefinicaoBase[] = [
   baseVagas,
   basePerfilEleitorado,
   basePerfilComparecimento,
+  basePrestacaoContas,
 ];
 
 const servicos: ((server: McpServer, ctx: Contexto) => void)[] = [
@@ -39,6 +42,7 @@ const servicos: ((server: McpServer, ctx: Contexto) => void)[] = [
   registrarResultados,
   registrarCandidatos,
   registrarPerfil,
+  registrarContas,
   registrarOndeVotar,
 ];
 
