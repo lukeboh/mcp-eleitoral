@@ -12,6 +12,7 @@ describe("servidor MCP", () => {
     const { tools } = await ctx.client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
       "baixar_base",
+      "buscar_candidatos",
       "buscar_locais_votacao",
       "buscar_municipio",
       "comparecimento_abstencao",
@@ -20,10 +21,13 @@ describe("servidor MCP", () => {
       "locais_votacao_proximos",
       "onde_votar",
       "onde_votar_continuar",
+      "perfil_candidato",
       "progresso_downloads",
+      "ranking_patrimonio",
       "remover_base",
       "resultado_eleicao",
       "resultado_local_votacao",
+      "vagas_e_coligacoes",
       "votos_candidato",
     ]);
   });

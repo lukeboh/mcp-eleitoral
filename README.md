@@ -20,6 +20,10 @@ Foi estruturado para receber outros serviços (situação eleitoral, certidões�
 | Quantos votos fulano teve em cada município? Onde fulana foi mais votada? | `votos_candidato` |
 | Qual foi a abstenção em SP? Quais estados tiveram mais brancos e nulos? | `comparecimento_abstencao` |
 | Quem ganhou na Escola Classe 206 Sul? Como votou a seção 579? E o bairro Asa Sul? | `resultado_local_votacao` |
+| Quem são os candidatos a governador do DF? Quantas mulheres foram eleitas deputadas em SP? Que partido elegeu mais governadores? | `buscar_candidatos` |
+| Quem é fulano: partido, coligação, idade, ocupação, bens declarados? | `perfil_candidato` |
+| Quais candidatos a presidente são mais ricos? Patrimônio médio dos eleitos por partido? | `ranking_patrimonio` |
+| Quantas vagas de deputado federal tem SP? Quais partidos formam cada coligação? | `vagas_e_coligacoes` |
 | Onde eu voto? Qual a minha zona e seção? Meu título está regular? | `onde_votar` (e `onde_votar_continuar`, se houver verificação) |
 
 Sobre proximidade: o servidor não sabe onde o usuário está. O modelo pede um endereço,
@@ -76,6 +80,7 @@ Bases disponíveis (tamanhos de 2026):
 | `resultados-partidos` | Votos por partido por município/zona | ~22 MB |
 | `resultados-candidatos` | Votos por candidato por município/zona (CSV de 3 GB; ~6 min para processar) | ~435 MB |
 | `votacao-secao` | Votos por seção, **por UF** (`BR` = presidente, `ZZ` = exterior) | de 1 MB a ~730 MB (SP) |
+| `candidatos`, `candidatos-complementar`, `bens-candidatos`, `coligacoes`, `vagas` | Candidaturas, perfil, bens, coligações e vagas | 0,2 a 3,6 MB cada (automáticas) |
 
 Pelo terminal, com barra de progresso:
 
@@ -86,6 +91,9 @@ npm run dados -- baixar locais-votacao                # pede confirmação
 npm run dados -- baixar votacao-secao --uf DF --sim
 npm run dados -- remover locais-votacao
 ```
+
+Privacidade: o servidor não armazena CPF, título, e-mail nem data de nascimento de candidatos
+(guarda só a idade na posse), e as amostras de teste têm esses campos mascarados.
 
 ## Instalação
 
